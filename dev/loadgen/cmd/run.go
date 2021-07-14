@@ -36,7 +36,7 @@ var runCmd = &cobra.Command{
 	Use:   "run",
 	Short: "runs the load generator",
 	Run: func(cmd *cobra.Command, args []string) {
-		const workspaceCount = 500
+		const workspaceCount = 1
 
 		var load loadgen.LoadGenerator
 		load = loadgen.NewFixedLoadGenerator(500*time.Millisecond, 300*time.Millisecond)
@@ -51,7 +51,7 @@ var runCmd = &cobra.Command{
 			},
 			ServicePrefix: "will-be-overriden",
 			Spec: &api.StartWorkspaceSpec{
-				IdeImage:         "eu.gcr.io/gitpod-dev/ide/theia:master.3206",
+				IdeImage:         "eu.gcr.io/gitpod-dev/ide/code:commit-8c1466008dedabe79d82cbb91931a16f7ce7994c",
 				Admission:        api.AdmissionLevel_ADMIT_OWNER_ONLY,
 				CheckoutLocation: "gitpod",
 				Git: &api.GitSpec{
@@ -72,13 +72,14 @@ var runCmd = &cobra.Command{
 						},
 					},
 				},
-				Timeout:           "5m",
-				WorkspaceImage:    "eu.gcr.io/gitpod-dev/workspace-images:3fcaad7ba5a5a4695782cb4c366b82f927f1e6c1cf0c88fd4f14d985f7eb21f6",
+				Timeout: "5m",
+				// WorkspaceImage:    "eu.gcr.io/gitpod-dev/workspace-images:3fcaad7ba5a5a4695782cb4c366b82f927f1e6c1cf0c88fd4f14d985f7eb21f6",
+				WorkspaceImage:    "reg.gitpod.io:31001/remote/1e54c2a8-d419-4788-b5cc-5530a47ba584",
 				WorkspaceLocation: "gitpod",
 				Envvars: []*api.EnvironmentVariable{
 					{
 						Name:  "THEIA_SUPERVISOR_TOKENS",
-						Value: `[{"token":"foobar","host":"gitpod-staging.com","scope":["function:getWorkspace","function:getLoggedInUser","function:getPortAuthenticationToken","function:getWorkspaceOwner","function:getWorkspaceUsers","function:isWorkspaceOwner","function:controlAdmission","function:setWorkspaceTimeout","function:getWorkspaceTimeout","function:sendHeartBeat","function:getOpenPorts","function:openPort","function:closePort","function:getLayout","function:generateNewGitpodToken","function:takeSnapshot","function:storeLayout","function:stopWorkspace","resource:workspace::fa498dcc-0a84-448f-9666-79f297ad821a::get/update","resource:workspaceInstance::e0a17083-6a78-441a-9b97-ef90d6aff463::get/update/delete","resource:snapshot::*::create/get","resource:gitpodToken::*::create","resource:userStorage::*::create/get/update"],"expiryDate":"2020-12-01T07:55:12.501Z","reuse":2}]`,
+						Value: `[{"tokenOTS":"https://gitpod.io/api/ots/get/12e48a26-6365-47ff-8123-396e174d3cd6","token":"ots","kind":"gitpod","host":"gitpod.io","scope":["function:getWorkspace","function:getLoggedInUser","function:getPortAuthenticationToken","function:getWorkspaceOwner","function:getWorkspaceUsers","function:isWorkspaceOwner","function:controlAdmission","function:setWorkspaceTimeout","function:getWorkspaceTimeout","function:sendHeartBeat","function:getOpenPorts","function:openPort","function:closePort","function:getLayout","function:generateNewGitpodToken","function:takeSnapshot","function:storeLayout","function:stopWorkspace","function:getToken","function:getContentBlobUploadUrl","function:getContentBlobDownloadUrl","function:accessCodeSyncStorage","function:guessGitTokenScopes","function:getEnvVars","function:setEnvVar","function:deleteEnvVar","resource:workspace::red-koi-5v89i5l0::get/update","resource:workspaceInstance::1e54c2a8-d419-4788-b5cc-5530a47ba584::get/update/delete","resource:snapshot::ws-red-koi-5v89i5l0::create","resource:gitpodToken::*::create","resource:userStorage::*::create/get/update","resource:token::*::get","resource:contentBlob::*::create/get","resource:envVar::gitpod-com/gitpod::create/get/update/delete"],"expiryDate":"2022-07-15T05:47:17.875Z","reuse":2}]`,
 					},
 				},
 			},
