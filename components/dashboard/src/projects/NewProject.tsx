@@ -18,10 +18,8 @@ import search from "../icons/search.svg";
 import moment from "moment";
 
 export default function NewProject() {
-
     const location = useLocation();
     const history = useHistory();
-
     const { teams } = useContext(TeamsContext);
 
     const [provider, setProvider] = useState<string>("github.com");

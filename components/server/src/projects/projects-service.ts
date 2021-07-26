@@ -6,7 +6,7 @@
 
 import { inject, injectable } from "inversify";
 import { DBWithTracing, ProjectDB, TeamDB, TracedWorkspaceDB, WorkspaceDB } from "@gitpod/gitpod-db/lib";
-import { Branch, CommitInfo, CreateProjectParams, FindPrebuildsParams, PrebuildInfo, PrebuiltWorkspace, Project, User } from "@gitpod/gitpod-protocol";
+import { Branch, CommitInfo, CreateProjectParams, FindPrebuildsParams, PrebuildInfo, PrebuiltWorkspace, Project, ProjectConfig, User } from "@gitpod/gitpod-protocol";
 import { HostContextProvider } from "../auth/host-context-provider";
 import { parseRepoUrl } from "../repohost";
 
@@ -22,16 +22,17 @@ export class ProjectsService {
         return this.projectDB.findProjectById(projectId);
     }
 
-    async getProjects(teamId: string): Promise<Project[]> {
-        const projects = await this.projectDB.findProjectsByTeam(teamId);
+    async getTeamProjects(teamId: string): Promise<Project[]> {
+        const projects = await this.projectDB.findTeamProjects(teamId);
         return projects;
     }
 
-    async getProjectOverview(user: User, teamId: string, projectName: string): Promise<Project.Overview | undefined> {
-        const project = await this.projectDB.findProjectByTeamAndName(teamId, projectName);
-        if (!project) {
-            return undefined;
-        }
+    async getUserProjects(userId: string): Promise<Project[]> {
+        const projects = await this.projectDB.findUserProjects(userId);
+        return projects;
+    }
+
+    async getProjectOverview(user: User, project: Project): Promise<Project.Overview | undefined> {
         const branches = await this.getBranchDetails(user, project);
         return { branches };
     }
@@ -143,7 +144,7 @@ export class ProjectsService {
             startedAt: prebuild.creationTime,
             startedBy: "", // TODO
             startedByAvatar: "", // TODO
-            teamId,
+            teamId: teamId || "", // TODO
             projectName,
             branch: prebuild.branch || "unknown",
             cloneUrl: prebuild.cloneURL,
@@ -157,6 +158,10 @@ export class ProjectsService {
             // changeUrl
             branchPrebuildNumber: "42"
         };
+    }
+
+    async setProjectConfiguration(projectId: string, config: ProjectConfig) {
+        return this.projectDB.setProjectConfiguration(projectId, config);
     }
 
 }
