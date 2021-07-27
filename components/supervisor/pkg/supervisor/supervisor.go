@@ -132,7 +132,6 @@ func Run(options ...RunOption) {
 		log.WithError(err).Fatal("cannot ensure Gitpod user exists")
 	}
 
-	buildIDEEnv(&Config{})
 	configureGit(cfg)
 
 	tokenService := NewInMemoryTokenService()
@@ -576,6 +575,19 @@ func buildIDEEnv(cfg *Config) []string {
 		log.WithField("envvar", nme).Debug("passing environment variable to IDE")
 		env = append(env, fmt.Sprintf("%s=%s", nme, val))
 		envn = append(envn, nme)
+	}
+
+	// if we added the user there will be no $HOME set for the gitpod user.
+	var hasHome bool
+	for _, n := range envn {
+		if n == "HOME" {
+			hasHome = true
+			break
+		}
+	}
+	if !hasHome {
+		env = append(env, "HOME=/home/gitpod")
+		envn = append(envn, "HOME")
 	}
 
 	log.WithField("envvar", envn).Debug("passing environment variables to IDE")
