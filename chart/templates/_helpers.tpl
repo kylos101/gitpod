@@ -178,8 +178,6 @@ env:
 {{- end }}
 - name: GITPOD_DOMAIN
   value: {{ $gp.hostname | quote }}
-- name: HOST_URL
-  value: "https://{{ $gp.hostname }}"
 - name: GITPOD_REGION
   value: {{ $gp.installation.region | quote }}
 - name: GITPOD_INSTALLATION_LONGNAME
