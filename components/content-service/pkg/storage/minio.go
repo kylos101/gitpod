@@ -159,7 +159,7 @@ func minioEnsureExists(ctx context.Context, client *minio.Client, bucketName str
 
 	exists, err := client.BucketExists(ctx, bucketName)
 	if err != nil {
-		return err
+		return xerrors.Errorf("cannot check if bucket exists: %w", err)
 	}
 	if exists {
 		// bucket exists already - we're fine
